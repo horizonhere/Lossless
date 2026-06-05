@@ -6,37 +6,81 @@
 
 Implementing a new way to get beautiful custom canvas background videos for the **Echo Music** app.
 
-This repository acts as the central hub for mapping custom `.m3u8` or `.mp4` background visualizers to specific songs or albums within the Echo Music client.
+This repository acts as the central hub for mapping custom `.mp4` or `.m3u8` background visualizers to specific songs or albums within the Echo Music client.
 
 ---
 
-## How to Add a New Canvas
+## 🚀 What's New — Contribute Portal v2
 
-If you find a custom vertical visualizer or music video clip and want it to display as a dynamic canvas background in Echo Music whenever a specific song plays, follow these steps:
+The submission portal has been upgraded with powerful new capabilities. Here's what changed and why it matters:
+
+### 🎶 Multi-Song Linking
+Previously, you could only submit **one song per upload**. Now, a single canvas video can be linked to **multiple songs at once** — perfect for album canvases or tracks that share the same visual.
+
+### 🔗 Reuse an Existing Canvas
+No need to re-upload the same video twice. You can now **search the existing gallery** directly from the portal and link any canvas that's already live to new song entries. This keeps the repository lightweight and avoids duplicate files.
+
+---
+
+## How to Contribute via the Portal
+
+The easiest way to submit a canvas is through the **[Contribute Portal](https://canvas.echomusic.fun/contribute.html)**. No Git knowledge required — the portal handles forking, branching, and Pull Requests automatically.
+
+### Step 1 — Log In with GitHub
+Click **"Log in with GitHub"** to authenticate. This gives the portal permission to create a Pull Request on your behalf, with your GitHub profile credited as the author.
+
+### Step 2 — Choose a Category
+Select **Song Canvas** for individual tracks, or **Album Canvas** for album-wide loops.
+
+### Step 3 — Choose Your Canvas Source
+You'll see two options:
+
+| Option | When to Use |
+|---|---|
+| **Upload New Video** | You have a new `.mp4` visualizer to add to the gallery. Drag and drop it, and the portal will validate format, size, duration, and aspect ratio automatically. |
+| **Use Existing Canvas** | You want to link an already-uploaded canvas to new songs. Search by song name, artist, or URL and select the canvas from the dropdown. |
+
+### Step 4 — Add Songs
+Click **"+ Add Song Entry"** to add one or more songs. Each row needs a **Song Title** and **Artist Name**. You can add as many songs as you need — all of them will point to the same canvas video.
+
+For example, if you're adding an album canvas for "Dawn FM" by The Weeknd, you'd add one row per track on the album, all sharing the same visual.
+
+### Step 5 — Submit
+Hit **"Submit to GitHub"**. The portal will automatically fork the repo, create a branch, upload the video (if applicable), update `canvas.json`, and open a Pull Request. You'll get a direct link to view your PR on GitHub.
+
+---
+
+## How to Add a Canvas Manually
+
+If you prefer working with Git directly:
 
 ### 1. Upload your Video File
-Add your video file into either the `Song/` or `Album/` directories within this repository.
-* **Format:** `.m3u8` or `.mp4`
+Add your video file into either the `Song/` or `Album/` directory.
+* **Format:** `.mp4` or `.m3u8`
 * **Example:** `Song/dracula_visualizer.mp4`
 
 ### 2. Update `canvas.json`
-Open the `canvas.json` file located in the root of the repository. Add a new item block mapping the exact song name and artist to your new video URL pointing to your deployed domain.
+Open `canvas.json` and add new entries. You can map **multiple songs to the same video URL**:
 
-**Example entry:**
 ```json
 {
   "items": [
     {
-      "song": "Song Title",
+      "song": "Track One",
       "artist": "Artist Name",
-      "url": "https://echo-music-canvas.pages.dev/Song/your_video.mp4"
+      "url": "https://canvas.echomusic.fun/Song/your_video.mp4"
+    },
+    {
+      "song": "Track Two",
+      "artist": "Artist Name",
+      "url": "https://canvas.echomusic.fun/Song/your_video.mp4"
     }
   ]
 }
 ```
 
 ### 3. Commit and Push
-Once you have uploaded your video and updated `canvas.json`, commit your changes, push them to your repository fork, and submit a Pull Request.
+Commit your changes, push to your fork, and submit a Pull Request.
 
 > [!IMPORTANT]
 > When opening a **Pull Request**, please include the **original song/album link** (YouTube Music, Spotify, or similar) in the description. This helps verify metadata and ensure the canvas matches the correct track.
@@ -56,7 +100,7 @@ Once your PR is accepted and merged, it will deploy automatically to Cloudflare 
 To ensure the integrity of `canvas.json` and prevent layout or loading issues, make sure your visualizer files meet the following guidelines:
 
 * **Aspect Ratio:** `9:16` (Vertical Canvas is required for mobile playback).
-* **Format:** `.mp4` or `.m3u8` files.
+* **Format:** `.mp4` or `.m3u8`.
 * **File Size:** Max **5MB** for faster buffering and low data usage.
 * **Looping:** 3–30 seconds duration with a clean loop transition.
 
