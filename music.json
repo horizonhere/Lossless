@@ -1,6 +1,11 @@
 {
   "items": [
     {
+      "song": "Harleys In Hawaii",
+      "artist": "Katy Perry",
+      "url": "https://lossless.echomusic.fun/Music/shivanium-git-katy_perry_-_harleys_in_hawaii.flac"
+    },
+    {
       "song": "Falling",
       "artist": "Trevor Daniel",
       "url": "https://lossless.echomusic.fun/Music/shivanium-git-trevor_daniel_-_falling.flac"
