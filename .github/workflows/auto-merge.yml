@@ -1,26 +1,42 @@
-name: Auto Merge
+name: Validate & Auto Merge
 
 on:
-  pull_request:
-    types: [opened, reopened, synchronize, ready_for_review]
+  pull_request_target:
+    types: [opened, reopened, synchronize]
 
 permissions:
   pull-requests: write
   contents: write
 
 jobs:
-  auto-merge:
+  validate-and-merge:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     steps:
-      - name: Auto-Approve PR
+      - name: Validate PR Files
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{github.event.pull_request.html_url}}
-        run: gh pr review --approve "$PR_URL" || true
-        
-      - name: Enable Auto-Merge (Queue)
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          echo "Fetching files changed in PR..."
+          FILES=$(gh pr view "$PR_URL" --json files -q '.files[].path')
+          echo "Files changed:"
+          echo "$FILES"
+          
+          for FILE in $FILES; do
+            if [[ ! "$FILE" == submissions/* ]] && [[ ! "$FILE" == Music/* ]]; then
+              echo "::error::PR touches unauthorized files: $FILE"
+              gh pr comment "$PR_URL" -b "❌ **Validation Failed:** You are only allowed to add files to the \`submissions/\` and \`Music/\` directories."
+              gh pr close "$PR_URL"
+              exit 1
+            fi
+          done
+          echo "Validation passed."
+          
+      - name: Auto-Approve and Merge
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{github.event.pull_request.html_url}}
-        run: gh pr merge --auto --merge "$PR_URL"
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          gh pr review --approve "$PR_URL" || true
+          gh pr merge --auto --squash "$PR_URL"
